@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    container_name: {{NOMBRE_PROYECTO}}
+    working_dir: /var/www
+    ports:
+      - 8001:8001
+    volumes:
+      - ./{{NOMBRE_PROYECTO}}:/var/www
+    networks:
+      - app-network_modulos
+  nginx:
+    image: nginx:latest
+    container_name: nginx_modulos
+    restart: unless-stopped
+    ports:
+      - 83:82
+    volumes:
+      - ./{{NOMBRE_PROYECTO}}/:/var/www
+      - ./nginx:/etc/nginx/conf.d/
+    networks:
+      - app-network_modulos
+
+networks:
+  app-network_modulos:
+    driver: bridge
